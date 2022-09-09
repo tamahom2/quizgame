@@ -1,0 +1,20 @@
+<?php
+session_start();
+include("DB.php");
+$db = new DB();
+$Theme = $_POST["Theme"];
+$username = $_SESSION["username"];
+$query = "SELECT * FROM users WHERE username='$username'";
+$res1 = $db->query($query)->fetchArray();
+$userId = $res1["id"];
+$nom = mysqli_real_escape_string($db->getConn(), $_POST["QCM"]);
+$query = "SELECT * FROM `theme` WHERE label=\"$Theme\"";
+$res = $db->query($query)->fetchArray();
+$fk = $res["id"];
+$query1 = "INSERT INTO qcm (label,fk_theme_id,fk_user_id) VALUES (\"$nom\", $fk, $userId)";
+$res = $db->query($query1);
+$_SESSION["Nbre"] = $_POST["Nbre"];
+$query2 =  "SELECT * FROM `qcm` WHERE label='$nom'";
+$res = $db->query($query2)->fetchArray();
+$_SESSION["id"] = $res["id"];
+header("location:../view/addquestions.php");
